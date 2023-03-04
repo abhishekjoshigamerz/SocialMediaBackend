@@ -1,4 +1,5 @@
 const Post = require("../../models/post/post");
+const User = require("../../models/user/user");
 
 module.exports.createPost = async function(req, res){
     try {
@@ -96,5 +97,26 @@ module.exports.dislikePost = async function(req, res){
         return res.status(500).json({
             "Message":error.message
         });    
+    }
+}
+
+
+//timeline 
+module.exports.getTimelinePosts = async function(req, res){
+    let postArrays = [];
+    try {
+        const currentUser = await User.findById(req.body.userId);
+        const userPosts = await Post.find({userId:currentUser._id});
+        const friendPosts = await Promise.all(
+            currentUser.following.map(async (friendId)=>{
+                console.log(friendId);
+               return await Post.find({userId:friendId});
+            })
+        );
+        res.json(userPosts.concat(...friendPosts));
+    } catch (error) {
+        res.status(500).json({
+            "Message":error.message
+        });
     }
 }

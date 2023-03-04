@@ -21,7 +21,7 @@ router.put('/post/dislike-post/:id', Post.dislikePost);
 //get a post
 
 //get timeline posts
-
+router.get('/post/timeline-post/', Post.getTimelinePosts);
 //get all posts
 
 
