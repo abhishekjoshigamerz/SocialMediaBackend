@@ -110,3 +110,28 @@ module.exports.followUser = async function(req,res){
         })
     }
 }
+
+//unfollow user
+module.exports.unfollowUser = async function(req,res){
+    if(req.body.userId !== req.params.id){
+        try {
+            const user = await User.findById(req.params.id);
+            const currentUser = await User.findById(req.body.userId);
+            if(user.followers.includes(req.body.userId)){  
+                await user.updateOne({$pull:{followers:req.body.userId}});
+                await currentUser.updateOne({$pull:{following:req.params.id}});
+                res.status(200).json("user has been unfollwed");
+            }else{
+                res.status(403).json("you already unfollowed this user");
+            }
+        } catch (error) {
+            res.status(500).json({
+                "Message":error.message
+            });
+        }
+    }else{
+        res.status(403).json({
+            "Message":"You can't unfollow yourself"
+        })
+    }
+}

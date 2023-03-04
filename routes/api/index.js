@@ -6,5 +6,9 @@ console.log('Router loaded');
 router.get('/', userController.home);
 
 router.use('/api/auth', require('./auth'));
+
 router.use('/api/auth',require('./user'));
+
+router.use('/api/auth',require('./posts'));
+
 module.exports = router;
